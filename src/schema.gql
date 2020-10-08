@@ -1,6 +1,7 @@
 type Query {
   "Take screenshot"
-  takeScreenshot(url: String!, width: Int, height: Int, name: String, wait: Int): [Screenshot!]
+  takeScreenshot(url: String!, width: Int, height: Int, name: String, wait: Int,
+    includeDate: Boolean): [Screenshot!]
 }
 
 type Screenshot {

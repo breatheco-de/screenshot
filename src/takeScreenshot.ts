@@ -33,6 +33,7 @@ type TakeScreenshot = {
   readonly height?: number
   readonly name?: string
   readonly wait?: number
+  readonly includeDate?: boolean
 }
 
 type ScreenshotResult = {
@@ -41,8 +42,8 @@ type ScreenshotResult = {
   readonly createdAt: string
 }
 
-export default async function takeScreenshot({ url, width, height, name = 'side', wait }: TakeScreenshot):
-  Promise<readonly ScreenshotResult[]> {
+export default async function takeScreenshot({ url, width, height, name = 'side', wait,
+  includeDate }: TakeScreenshot): Promise<readonly ScreenshotResult[]> {
   try {
     const arr: readonly Resolution[] = width && height ?
       [[Number(width), Number(height)]] : resolutions
@@ -62,7 +63,10 @@ export default async function takeScreenshot({ url, width, height, name = 'side'
       try {
         const page = await browser.newPage()
         await page.goto(url)
-        const imagePath = path.join(screenshotPath, `${name}-${width}-${height}.png`)
+
+        const imagePath = path.join(screenshotPath, includeDate ?
+          `${name}-${width}x${height}-${createdAt}.png` : `${name}-${width}x${height}.png`)
+
         await page.setViewport({ width, height })
         if (wait) await waitFor(wait)
         screenshots.push({
