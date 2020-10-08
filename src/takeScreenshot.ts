@@ -7,6 +7,7 @@ import path from 'path'
 import createDirIfNotExist from './createDirIfNotExist'
 
 type Resolution = readonly [number, number]
+export type Screenshot = readonly [string, Buffer]
 
 const url = process.env.URL || 'https://google.co.ve'
 const imageBaseName = process.env.SCREENSHOT_BASE_NAME || 'side'
@@ -32,7 +33,7 @@ if (!process.env.URL) console.warn('URL environment variable is not set')
 
 createDirIfNotExist('screenshots')
 
-export default async function takeScreenshot(): Promise<void> {
+export default async function takeScreenshot(): Promise<readonly Screenshot[]> {
   try {
     const arr: readonly Resolution[] = defaultWidth && defaultHeight ?
       [[Number(defaultWidth), Number(defaultHeight)]] : resolutions
@@ -41,6 +42,8 @@ export default async function takeScreenshot(): Promise<void> {
       // headless: false,
       defaultViewport: null
     })
+    // eslint-disable-next-line functional/prefer-readonly-type
+    const screenshots: Screenshot[] = []
 
     // run it in pallalel mode is bug
     for (const [width, height] of arr) {
@@ -49,7 +52,8 @@ export default async function takeScreenshot(): Promise<void> {
         await page.goto(url)
         const imagePath = path.join(screenshotPath, `${imageBaseName}-${width}-${height}.png`)
         await page.setViewport({ width, height })
-        await page.screenshot({ path: imagePath })
+        screenshots.push([imagePath, await page.screenshot({})])
+        // await page.screenshot({ path: imagePath })
         await page.close()
 
         console.log(`Screenshot was save in ${imagePath}`)
@@ -59,6 +63,10 @@ export default async function takeScreenshot(): Promise<void> {
       }
     }
     await browser.close()
+    return screenshots
   }
-  catch (e) { console.error(e.message) }
+  catch (e) {
+    console.error(e.message)
+    return []
+  }
 }

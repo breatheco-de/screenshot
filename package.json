@@ -9,6 +9,7 @@
     "docker:build": "./scripts/docker-build.sh"
   },
   "dependencies": {
+    "@google-cloud/storage": "^5.3.0",
     "@types/puppeteer": "^3.0.2",
     "puppeteer": "^5.3.1"
   },
