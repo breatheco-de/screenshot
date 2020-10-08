@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "dev": "nodemon -w ./src -e ts -x \"yarn build && node ./dist/index.js\"",
     "build": "tsc --build ./tsconfig.json",
     "docker:build": "./scripts/docker-build.sh"
   },

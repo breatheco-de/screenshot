@@ -48,18 +48,15 @@ export default async function takeScreenshot({ url, width, height, name = 'side'
     const arr: readonly Resolution[] = width && height ?
       [[Number(width), Number(height)]] : resolutions
 
+    const createdAt = new Date().toISOString()
     const browser = await puppeteer.launch({
       args: ['--disable-dev-shm-usage', '--disable-dev-shm-usage', '--no-sandbox'],
       // headless: false,
       defaultViewport: null
     })
 
-    // eslint-disable-next-line functional/prefer-readonly-type
-    const screenshots: ScreenshotResult[] = []
-    const createdAt = new Date().toISOString()
-
-    // run it in pallalel mode is bug
-    for (const [width, height] of arr) {
+    const screenshots = await Promise.all(arr.map(async ([width, height]):
+      Promise<ScreenshotResult> => {
       try {
         const page = await browser.newPage()
         await page.goto(url)
@@ -69,19 +66,19 @@ export default async function takeScreenshot({ url, width, height, name = 'side'
 
         await page.setViewport({ width, height })
         if (wait) await waitFor(wait)
-        screenshots.push({
+        const screenshot = {
           url: imagePath,
           // buffer: await page.screenshot({}),
           buffer: await page.screenshot({ path: imagePath }),
           createdAt
-        })
-        // await page.screenshot({ path: imagePath })
+        }
         await page.close()
 
         console.log(`Screenshot was save in ${imagePath}`)
+        return screenshot
       }
       catch (e) { throw new Error(e.message) }
-    }
+    }))
     await browser.close()
     return screenshots
   }
