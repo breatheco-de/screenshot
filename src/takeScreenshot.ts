@@ -9,11 +9,7 @@ import createDirIfNotExist from './createDirIfNotExist'
 type Resolution = readonly [number, number]
 export type Screenshot = readonly [string, Buffer]
 
-const url = process.env.URL || 'https://google.co.ve'
-const imageBaseName = process.env.SCREENSHOT_BASE_NAME || 'side'
 const screenshotPath = process.env.SCREENSHOT_PATH || 'screenshots'
-const defaultWidth = process.env.WIDTH
-const defaultHeight = process.env.HEIGHT
 
 // https://www.hobo-web.co.uk/best-screen-size/
 const resolutions: readonly Resolution[] = [
@@ -29,44 +25,68 @@ const resolutions: readonly Resolution[] = [
   [360, 640] // 2.45%
 ]
 
-if (!process.env.URL) console.warn('URL environment variable is not set')
-
 createDirIfNotExist('screenshots')
 
-export default async function takeScreenshot(): Promise<readonly Screenshot[]> {
+type TakeScreenshot = {
+  readonly url: string
+  readonly width?: number
+  readonly height?: number
+  readonly name?: string
+  readonly wait?: number
+}
+
+type ScreenshotResult = {
+  readonly url: string
+  readonly buffer: Buffer
+  readonly createdAt: string
+}
+
+export default async function takeScreenshot({ url, width, height, name = 'side', wait }: TakeScreenshot):
+  Promise<readonly ScreenshotResult[]> {
   try {
-    const arr: readonly Resolution[] = defaultWidth && defaultHeight ?
-      [[Number(defaultWidth), Number(defaultHeight)]] : resolutions
+    const arr: readonly Resolution[] = width && height ?
+      [[Number(width), Number(height)]] : resolutions
+
     const browser = await puppeteer.launch({
       args: ['--disable-dev-shm-usage', '--disable-dev-shm-usage', '--no-sandbox'],
       // headless: false,
       defaultViewport: null
     })
+
     // eslint-disable-next-line functional/prefer-readonly-type
-    const screenshots: Screenshot[] = []
+    const screenshots: ScreenshotResult[] = []
+    const createdAt = new Date().toISOString()
 
     // run it in pallalel mode is bug
     for (const [width, height] of arr) {
       try {
         const page = await browser.newPage()
         await page.goto(url)
-        const imagePath = path.join(screenshotPath, `${imageBaseName}-${width}-${height}.png`)
+        const imagePath = path.join(screenshotPath, `${name}-${width}-${height}.png`)
         await page.setViewport({ width, height })
-        screenshots.push([imagePath, await page.screenshot({})])
+        if (wait) await waitFor(wait)
+        screenshots.push({
+          url: imagePath,
+          // buffer: await page.screenshot({}),
+          buffer: await page.screenshot({ path: imagePath }),
+          createdAt
+        })
         // await page.screenshot({ path: imagePath })
         await page.close()
 
         console.log(`Screenshot was save in ${imagePath}`)
       }
-      catch (e) {
-        console.error(e.message)
-      }
+      catch (e) { throw new Error(e.message) }
     }
     await browser.close()
     return screenshots
   }
-  catch (e) {
-    console.error(e.message)
-    return []
-  }
+  catch (e) { throw new Error(e.message) }
+}
+
+async function waitFor(ms: number): Promise<void> {
+  return new Promise<void>((resolve) =>
+    setTimeout(() => {
+      resolve()
+    }, ms))
 }

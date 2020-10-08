@@ -1,9 +1,13 @@
-import takeScreenshot from './takeScreenshot'
-import uploadToGoogleCloud from './uploadToGoogleCloud'
+import { server } from './server'
 
-async function startup(): Promise<void> {
-  const screenshots = await takeScreenshot()
-  await uploadToGoogleCloud(screenshots)
-}
+server()
 
-startup()
+// import takeScreenshot from './takeScreenshot'
+// import uploadToGoogleCloud from './uploadToGoogleCloud'
+
+// async function startup(): Promise<void> {
+//   const screenshots = await takeScreenshot()
+//   await uploadToGoogleCloud(screenshots)
+// }
+
+// startup()
