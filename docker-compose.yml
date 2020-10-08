@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  # api gateway
+  screenshot:
+    image: stcsolutions/screenshot
+    volumes:
+      - ./screenshots:/usr/src/screenshots
+    environment:
+      - URL=https://mail.google.com/
+      - SCREENSHOT_BASE_NAME=gmail
+      - SCREENSHOT_PATH=screenshots
+      # - WIDTH=1920
+      # - HEIGHT=1080

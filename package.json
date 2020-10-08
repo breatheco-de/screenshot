@@ -5,7 +5,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build ./tsconfig.json"
+    "build": "tsc --build ./tsconfig.json",
+    "docker:build": "./scripts/docker-build.sh"
   },
   "dependencies": {
     "@types/puppeteer": "^3.0.2",
