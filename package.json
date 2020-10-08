@@ -5,15 +5,22 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon -w ./src -e ts -x \"yarn build && node ./dist/index.js\"",
+    "start": "yarn build && node ./dist/index.js",
+    "dev": "nodemon -w ./src -e ts -x \"yarn start\"",
     "build": "tsc --build ./tsconfig.json",
-    "docker:build": "./scripts/docker-build.sh"
+    "login": "gcloud auth application-default login",
+    "docker:run": "docker-compose up -d",
+    "docker:build": "./scripts/docker-build.sh",
+    "docker:log": "docker-compose logs -f screenshot",
+    "docker:down": "docker-compose down",
+    "docker:dev": "yarn docker:build && yarn docker:run && yarn docker:log"
   },
   "dependencies": {
     "@google-cloud/storage": "^5.3.0",
     "@types/cors": "^2.8.7",
     "@types/puppeteer": "^3.0.2",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.11.0",
     "graphql": "^15.3.0",

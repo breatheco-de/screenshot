@@ -6,11 +6,10 @@ services:
     image: stcsolutions/screenshot
     volumes:
       - ./screenshots:/usr/src/screenshots
+      - ~/.config/gcloud/:/root/.config/gcloud/:ro
     ports:
       - 5000:5000
     environment:
-      - URL=https://mail.google.com/
-      - SCREENSHOT_BASE_NAME=gmail
-      - SCREENSHOT_PATH=screenshots
-      # - WIDTH=1920
-      # - HEIGHT=1080
+      - SCREENSHOT_PATH=${SCREENSHOT_PATH}
+      - GOOGLE_CLOUD_PROJECT_ID=${GOOGLE_CLOUD_PROJECT_ID}
+      - BUCKET_NAME=${BUCKET_NAME}

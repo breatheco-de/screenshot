@@ -4,9 +4,9 @@
 /* eslint-disable no-underscore-dangle */
 import puppeteer from 'puppeteer'
 import path from 'path'
-import createDirIfNotExist from './createDirIfNotExist'
+// import createDirIfNotExist from './createDirIfNotExist'
 
-type Resolution = readonly [number, number]
+export type Resolution = readonly [number, number]
 export type Screenshot = readonly [string, Buffer]
 
 const screenshotPath = process.env.SCREENSHOT_PATH || 'screenshots'
@@ -25,7 +25,7 @@ const resolutions: readonly Resolution[] = [
   [360, 640] // 2.45%
 ]
 
-createDirIfNotExist('screenshots')
+// createDirIfNotExist('screenshots')
 
 type TakeScreenshot = {
   readonly url: string
@@ -36,14 +36,14 @@ type TakeScreenshot = {
   readonly includeDate?: boolean
 }
 
-type ScreenshotResult = {
+export type ScreenshotAttrs = {
   readonly url: string
   readonly buffer: Buffer
   readonly createdAt: string
 }
 
 export default async function takeScreenshot({ url, width, height, name = 'side', wait,
-  includeDate }: TakeScreenshot): Promise<readonly ScreenshotResult[]> {
+  includeDate }: TakeScreenshot): Promise<readonly Screenshot[]> {
   try {
     const arr: readonly Resolution[] = width && height ?
       [[Number(width), Number(height)]] : resolutions
@@ -56,26 +56,24 @@ export default async function takeScreenshot({ url, width, height, name = 'side'
     })
 
     const screenshots = await Promise.all(arr.map(async ([width, height]):
-      Promise<ScreenshotResult> => {
+      Promise<Screenshot> => {
       try {
         const page = await browser.newPage()
         await page.goto(url)
 
-        const imagePath = path.join(screenshotPath, includeDate ?
-          `${name}-${width}x${height}-${createdAt}.png` : `${name}-${width}x${height}.png`)
+        const filename = includeDate ?
+          `${name}-${width}x${height}-${createdAt}.png` : `${name}-${width}x${height}.png`
+        const imagePath = path.join(screenshotPath, filename)
 
         await page.setViewport({ width, height })
         if (wait) await waitFor(wait)
-        const screenshot = {
-          url: imagePath,
-          // buffer: await page.screenshot({}),
-          buffer: await page.screenshot({ path: imagePath }),
-          createdAt
-        }
+
+        // const buffer = await page.screenshot({ path: imagePath })
+        const buffer = await page.screenshot({})
         await page.close()
 
-        console.log(`Screenshot was save in ${imagePath}`)
-        return screenshot
+        console.log(`Screenshot is being saving as ${filename}`)
+        return [filename, buffer]
       }
       catch (e) { throw new Error(e.message) }
     }))
