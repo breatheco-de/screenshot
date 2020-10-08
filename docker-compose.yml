@@ -6,6 +6,8 @@ services:
     image: stcsolutions/screenshot
     volumes:
       - ./screenshots:/usr/src/screenshots
+    ports:
+      - 5000:5000
     environment:
       - URL=https://mail.google.com/
       - SCREENSHOT_BASE_NAME=gmail

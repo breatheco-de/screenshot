@@ -36,4 +36,6 @@ RUN yarn install --production=true && \
     yarn remove @chocolab/configs && \
     yarn cache clean
 
+EXPOSE 5000
+
 CMD node ./dist/index.js
