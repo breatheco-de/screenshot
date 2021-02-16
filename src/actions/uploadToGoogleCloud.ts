@@ -19,9 +19,12 @@ export default async function uploadToGoogleCloud(screenshots: readonly Screensh
       const storage = new Storage({ projectId })
       const bucket = storage.bucket(bucketName)
       const file = bucket.file(filename)
-      file.save(buffer)
+      file.save(buffer, {
+        validation: false
+      })
 
-      await file.makePublic()
+      // bucket now is public by default
+      // await file.makePublic()
 
       // return `https://${BUCKET_NAME}.storage.googleapis.com/${filename}`
       return {

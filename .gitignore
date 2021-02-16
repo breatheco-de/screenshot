@@ -2,3 +2,4 @@
 /screenshots
 /dist
 .env
+.google-cloud.json
