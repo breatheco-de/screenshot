@@ -5,10 +5,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "yarn build && node ./dist/index.js",
-    "dev": "nodemon -w ./src -e ts -x \"yarn start\"",
+    "start": "node ./src/index.js",
+    "dev": "nodemon -w ./src -e js -x \"yarn start\"",
     "build": "tsc --build ./tsconfig.json",
     "login": "gcloud auth application-default login",
+    "deploy": "./scripts/deploy.sh",
     "docker:run": "docker-compose up -d",
     "docker:build": "./scripts/docker-build.sh",
     "docker:log": "docker-compose logs -f screenshot",
@@ -29,7 +30,10 @@
   },
   "devDependencies": {
     "@chocolab/configs": "^1.0.4-alpha.0",
-    "eslint": "^7.10.0",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "firebase-tools": "^9.4.0",
     "nodemon": "^2.0.4",
     "typescript": "^4.0.3"
   }
