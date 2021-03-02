@@ -23,19 +23,13 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 # USER pptruser
 
 WORKDIR /usr/src
-COPY tsconfig.json tsconfig.json
 COPY package.json package.json
 
 COPY src src
 
 RUN yarn install --production=true && \
-    yarn global add typescript && \
-    yarn add @chocolab/configs && \
-    yarn build && \
-    yarn global remove typescript && \
-    yarn remove @chocolab/configs && \
     yarn cache clean
 
 EXPOSE 5000
 
-CMD node ./dist/index.js
+CMD node ./src/index.js

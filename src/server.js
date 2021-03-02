@@ -16,5 +16,5 @@ app.use('/', screenshots)
 // this is the debug server
 exports.server = function server() {
   const port = process.env.PORT || 5000
-  app.listen(port, () => console.log(`GraphQL server listening on port ${port}`))
+  app.listen(port, () => console.log(`Debug server listening on port ${port}`))
 }
