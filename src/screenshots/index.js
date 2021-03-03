@@ -40,7 +40,7 @@ module.exports.screenshots = async (request, response) => {
   }
 
   const message = {
-    url: request.query.url,
+    url: decodeURIComponent(request.query.url),
     name: request.query.name,
     dimension: request.query.dimension,
     delay: request.query.delay,

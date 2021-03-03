@@ -25,7 +25,12 @@ async function takeScreenshot({
   })
 
   const page = await browser.newPage()
-  await page.goto(/^http/.test(url) ? url : `https://${url}`)
+  page.setDefaultNavigationTimeout(0)
+  await page.goto(/^http/.test(url) ? url : `https://${url}`, {
+    waitUntil: 'load',
+    // Remove the timeout
+    timeout: 0,
+  })
 
   const filename = includeDate ?
     `${name}-${width}x${height}-${createdAt}.png` : `${name}-${width}x${height}.png`

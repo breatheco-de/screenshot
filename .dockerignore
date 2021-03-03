@@ -3,3 +3,4 @@
 /dist
 .env
 .google-cloud.json
+yarn-error.log
