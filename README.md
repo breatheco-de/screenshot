@@ -1,3 +1,15 @@
+# Using the service
+
+```typescript
+type Querystring = {
+    url: string,  // the url
+    name: string,  // the name of the file
+    dimension: string,  // the dimension like 10000x8000
+    delay: number,  // the time to wait before take the screenshot
+    includeDate: boolean,  // if you pass this argument the filename include the date
+}
+```
+
 # Concept
 
 Take screenshots of one or various pages and save it in Google Cloud Storage.
@@ -48,4 +60,11 @@ yarn login
 
 # build and run in localhost:5000
 yarn start
+```
+
+# Deploy
+
+```sh
+cd src/screenshots
+bash deploy.sh
 ```
