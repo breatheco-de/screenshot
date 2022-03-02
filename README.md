@@ -5,8 +5,8 @@ type Querystring = {
     url: string,  // the url
     name: string,  // the name of the file
     dimension: string,  // the dimension like 10000x8000
-    delay: number,  // the time to wait before take the screenshot
-    includeDate: boolean,  // if you pass this argument the filename include the date
+    delay: number,  // (optional) the time to wait before take the screenshot
+    includeDate: boolean,  // (optional) if you pass this argument the filename include the date
 }
 ```
 
