@@ -14,5 +14,4 @@
 .gitignore
 
 node_modules
-#!include:.gitignore
-/screenshots
+/coverage
