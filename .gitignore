@@ -4,3 +4,4 @@
 .env
 .google-cloud.json
 yarn-error.log
+/coverage
